@@ -7,8 +7,8 @@ import './App.css';
 let entity1, entity2;
 const SearchbarDropdown = (props) => {
   const { options, onInputChange } = props;
-  const ulRef = useRef();
-  const inputRef = useRef();
+  const ListRef = useRef();
+  const Searchbar = useRef();
   useEffect(() => {
     // using mockup Data
    fetchService.getAllData().then(
@@ -17,13 +17,13 @@ const SearchbarDropdown = (props) => {
       entity2 = data2.data;
     })
    )
-    inputRef.current.addEventListener('click', (event) => {
+    Searchbar.current.addEventListener('click', (event) => {
       event.stopPropagation();
-      ulRef.current.style.display = 'flex';
+      ListRef.current.style.display = 'flex';
       onInputChange(event);
     });
     document.addEventListener('click', (event) => {
-      ulRef.current.style.display = 'none';
+      ListRef.current.style.display = 'none';
     });
   }, []);
   return (
@@ -33,17 +33,17 @@ const SearchbarDropdown = (props) => {
         type="text"
         className="form-control"
         placeholder="Search"
-        ref={inputRef}
+        ref={Searchbar}
         onChange={onInputChange}
       />
-      <ul id="results" className="list-group" ref={ulRef}>
+      <ul id="results" className="list-group" ref={ListRef}>
         {options.map((option, index) => {
           return (
             <button
               type="button"
               key={index}
               onClick={(e) => {
-                inputRef.current.value = option.title || option.name;
+                Searchbar.current.value = option.title || option.name;
               }}
               className="list-group-item list-group-item-action"
             >
@@ -71,6 +71,9 @@ function App() {
   const [options, setOptions] = useState([]);
   const onInputChange = (event) => {
     let len = event.target.value.length;
+    /*
+    The following code is to avoid unnesscary computations while typing, considering the keystroke speed.
+    It will execute only when u have stopped typing for a second */
     setTimeout(() => {
       if(len === event.target.value.length) {
       let totalList = [ ...entity1, ...entity2]
@@ -92,7 +95,7 @@ function App() {
 
   return (
     <div className="App container mt-2 mb-3">
-      <h1>Search Bar Dropdown</h1>
+      <h1>Search Functionality</h1>
       <SearchbarDropdown options={options} onInputChange={onInputChange} />
       <br />
     </div>
