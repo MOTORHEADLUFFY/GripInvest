@@ -3,10 +3,12 @@ import fetchService from './fetchService';
 import Axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import Loader from './Loader';
 
 let entity1, entity2;
 const SearchbarDropdown = (props) => {
   const { options, onInputChange } = props;
+  const [ loader, onChangeLoader ] = useState(true);
   const ListRef = useRef();
   const Searchbar = useRef();
   useEffect(() => {
@@ -15,6 +17,7 @@ const SearchbarDropdown = (props) => {
     Axios.spread((data1, data2) => {
       entity1 = data1.data;
       entity2 = data2.data;
+      onChangeLoader(false);
     })
    )
     Searchbar.current.addEventListener('click', (event) => {
@@ -29,6 +32,7 @@ const SearchbarDropdown = (props) => {
   return (
     <div className="search-bar-dropdown">
       <input
+        hidden={loader}
         id="search-bar"
         type="text"
         className="form-control"
@@ -63,6 +67,7 @@ const SearchbarDropdown = (props) => {
           );
         })}
       </ul>
+      {loader && <Loader />}
     </div>
   );
 };
